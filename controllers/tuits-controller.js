@@ -33,6 +33,9 @@ const updateTuit = (req, res) => {
 
 
 export default (app) => {
+    app.get('/', (req, res) => {
+        res.send('Hello WORLD !! This is server end.')
+    });
     app.post('/api/tuits', createTuit);
     app.get('/api/tuits', findAllTuits);
     app.put('/api/tuits/:tid', updateTuit);
