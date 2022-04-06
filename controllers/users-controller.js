@@ -2,6 +2,9 @@ import people from './users.js';
 let users = people;
 
 const userController = (app) => {
+    app.get('/', (req, res) => {
+        res.send('Hello WORLD !! This is server end.')
+    });
     app.get('/api/users', findAllUsers);
     app.get('/api/users/:uid', findUserById);
     app.post('/api/users', createUser);
