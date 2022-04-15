@@ -1,35 +1,46 @@
-import posts from "./tuits.js";
-let tuits = posts;
+// import posts from "./tuits.js";
+import mongoose from "mongoose";
+import * as tuitsDao from "./tuits-dao.js";
+// mongoose.connect('mongodb://localhost:27017/webdev');
+// let tuits = posts;
 
-const createTuit = (req, res) => {
+
+const createTuit = async  (req, res) => {
     const newTuit = req.body;
-    newTuit._id = (new Date()).getTime()+'';
-    newTuit.likes = 0;
-    newTuit.Dislikes = 0;
-    newTuit.postedBy = {username : 'Rish'};
-    newTuit.handle = "spacex";
-    newTuit.stats = {comments:0, likes: 0, retuits:0};
-    newTuit.logo = "/images/elonmusk.jpg";
-    tuits.push(newTuit);
-    res.json(newTuit);
+    const insertedTuit = await tuitsDao.createTuit(newTuit);
+    res.json(insertedTuit);
 }
 
-const deleteTuit = (req, res) => {
+// const deleteTuit = (req, res) => {
+//     const tuitdIdToDelete = req.params.tid;
+//     tuits = tuits.filter(t => t._id !== tuitdIdToDelete);
+//     res.sendStatus(200);
+// }
+
+const deleteTuit = async (req, res) => {
     const tuitdIdToDelete = req.params.tid;
-    tuits = tuits.filter(t => t._id !== tuitdIdToDelete);
-    res.sendStatus(200);
+    const status = await tuitsDao.deleteTuit(tuitdIdToDelete);
+    res.send(status);
 }
 
-const updateTuit = (req, res) => {
+const updateTuit = async (req, res) => {
     const tuitdIdToUpdate = req.params.tid;
     const updatedTuit = req.body;
-    console.log(updatedTuit.stats.likes)
-    console.log(updatedTuit.likes)
-    updatedTuit.stats.likes = updatedTuit.likes;
-    console.log(updatedTuit.stats.likes)
-    tuits = tuits.map(t => t._id === tuitdIdToUpdate ? updatedTuit : t);
-    res.sendStatus(200);
+    const status = await tuitsDao.updateTuit(tuitdIdToUpdate, updatedTuit);
+    res.send(status);
 }
+
+
+// const updateTuit = (req, res) => {
+//     const tuitdIdToUpdate = req.params.tid;
+//     const updatedTuit = req.body;
+//     console.log(updatedTuit.stats.likes)
+//     console.log(updatedTuit.likes)
+//     updatedTuit.stats.likes = updatedTuit.likes;
+//     console.log(updatedTuit.stats.likes)
+//     tuits = tuits.map(t => t._id === tuitdIdToUpdate ? updatedTuit : t);
+//     res.sendStatus(200);
+// }
 
 
 export default (app) => {
@@ -42,5 +53,10 @@ export default (app) => {
     app.delete('/api/tuits/:tid', deleteTuit);
 }
 
-const findAllTuits = (req, res) =>
+// const findAllTuits = (req, res) =>
+//     res.json(tuits);
+
+const findAllTuits = async (req, res) => {
+    const tuits = await tuitsDao.findAllTuits()
     res.json(tuits);
+}
